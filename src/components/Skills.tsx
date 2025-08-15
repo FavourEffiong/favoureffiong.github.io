@@ -1,48 +1,75 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import SkillCard from './SkillCard';
+
 const skillCategories = [
   {
-    title: "Frontend",
+    title: "Frontend Development",
     icon: "🎨",
-    color: "blue",
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js"]
+    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js", "JavaScript", "HTML5", "CSS3"]
   },
   {
-    title: "Backend",
+    title: "Backend Development",
     icon: "⚙️",
-    color: "green",
-    skills: ["Node.js", "Express", "Python", "PostgreSQL", "MongoDB"]
+    skills: ["Node.js", "Express", "Python", "PostgreSQL", "MongoDB", "REST APIs", "GraphQL", "Firebase"]
   },
   {
-    title: "Tools",
+    title: "Tools & Technologies",
     icon: "🛠️",
-    color: "purple",
-    skills: ["Git", "Docker", "AWS", "Vercel", "Figma"]
+    skills: ["Git", "Docker", "AWS", "Vercel", "Figma", "VS Code", "Linux", "CI/CD"]
   }
 ];
 
 export default function Skills() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const element = document.getElementById('skills');
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  }, []);
+
   return (
-    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-800">
+    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-black">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center text-slate-900 dark:text-white mb-12">
-          Skills & Technologies
-        </h2>
+        <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-4xl sm:text-5xl font-heading font-bold text-black dark:text-white mb-4">
+            Skills & Technologies
+          </h2>
+          <p className="text-lg font-body text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            A comprehensive overview of my technical expertise and the tools I use to bring ideas to life.
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-8">
           {skillCategories.map((category, index) => (
-            <div key={index} className="text-center">
-              <div className={`bg-${category.color}-100 dark:bg-${category.color}-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4`}>
-                <span className="text-2xl">{category.icon}</span>
-              </div>
-              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">{category.title}</h3>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {category.skills.map((skill, skillIndex) => (
-                  <span 
-                    key={skillIndex}
-                    className="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-full"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+            <div
+              key={index}
+              className={`transition-all duration-700 ${
+                isVisible
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-10'
+              }`}
+              style={{ transitionDelay: `${index * 200}ms` }}
+            >
+              <SkillCard {...category} />
             </div>
           ))}
         </div>
